@@ -1,11 +1,14 @@
 import { Notify } from "notiflix";
 import { SearchPhoto } from "./pixabay-api";
+import SimpleLightbox from "simplelightbox";
+import 'simplelightbox/dist/simple-lightbox.min.css'
 import { renderImages, createMarkup } from "./helpers";
 import { refs } from "./refs";
 const {searchForm, galleryElem, btnLoadMore} = refs;
 
 const searchPhoto = new SearchPhoto();
 let userParams;
+let modalBox;
 
 searchForm.addEventListener('submit', onSubmit);
 
@@ -20,12 +23,13 @@ async function onSubmit(evt){
     
     if(!result.hits.length) return Notify.failure("Sorry, there are no images matching your search query. Please try again.")
     Notify.success(`Hooray! We found ${result.totalHits} images.`)
-    console.log(result);
 
     result.hits.map(data=>{
         renderImages(galleryElem, createMarkup(data));
     })
     btnLoadMore.classList.remove('visually-hidden')
+
+    modalBox = new SimpleLightbox('.gallery a')
 }
 
 btnLoadMore.addEventListener('click', onClickLoadMore)
@@ -45,4 +49,5 @@ async function onClickLoadMore() {
         renderImages(galleryElem, createMarkup(data));
     })
     btnLoadMore.classList.remove('visually-hidden')
+    modalBox.refresh()
 }

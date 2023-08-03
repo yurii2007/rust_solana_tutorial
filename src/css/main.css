@@ -60,6 +60,7 @@
     padding: 0;
     font-size: inherit;
     font-family: inherit;
+    margin-top: 10px;
    }
    
    button.learn-more {
@@ -149,8 +150,26 @@ img {
     height: 200px;
 }
 
+a {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: black;
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  margin: 0 auto;
+  padding-block: 10px;
+}
+
 .photo-card {
-    width: calc((100% - 60px) / 4);
+  border-radius: 2%;
+  box-shadow: 5px 5px 15px #bebebe,
+  5px 5px 15px #ffffff;
+  width: calc((100% - 60px) / 4);
 }
 
 .visually-hidden {
