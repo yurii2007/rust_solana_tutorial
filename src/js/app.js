@@ -17,17 +17,20 @@ async function onSubmit(evt){
     searchPhoto.page = 1;
     btnLoadMore.classList.add('visually-hidden')
 
+
+    userParams = searchForm.elements.searchQuery.value.toLowerCase().trim().split(' ').join('+');
+    if(!userParams) return Notify.failure('Please enter a valid key')
+
     galleryElem.innerHTML = '';
-    userParams = searchForm.elements.searchQuery.value;
     const result = await searchPhoto.getPhoto(userParams)
-    
+
     if(!result.hits.length) return Notify.failure("Sorry, there are no images matching your search query. Please try again.")
     Notify.success(`Hooray! We found ${result.totalHits} images.`)
 
     result.hits.map(data=>{
         renderImages(galleryElem, createMarkup(data));
     })
-    btnLoadMore.classList.remove('visually-hidden')
+    if(result.totalHits > 40) btnLoadMore.classList.remove('visually-hidden')
 
     modalBox = new SimpleLightbox('.gallery a')
 }
@@ -36,18 +39,15 @@ btnLoadMore.addEventListener('click', onClickLoadMore)
 
 async function onClickLoadMore() {
     searchPhoto.page += 1;
-
     btnLoadMore.classList.add('visually-hidden')
-
     const result = await searchPhoto.getPhoto(userParams)
     
     if(!result.hits.length) return Notify.failure("We're sorry, but you've reached the end of search results.")
 
-    if(result.totalHits <= (searchPhoto.page * searchPhoto.per_page)) return Notify.failure("We're sorry, but you've reached the end of search results.")
-
     result.hits.map(data=>{
         renderImages(galleryElem, createMarkup(data));
     })
-    btnLoadMore.classList.remove('visually-hidden')
     modalBox.refresh()
+    if(result.totalHits <= (searchPhoto.page * searchPhoto.per_page)) return Notify.failure("We're sorry, but you've reached the end of search results.")
+    btnLoadMore.classList.remove('visually-hidden')
 }
